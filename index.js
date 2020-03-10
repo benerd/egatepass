@@ -7,6 +7,7 @@
 const express = require("express");
 const path = require("path");
 const mysql = require('mysql');
+const bodyParser = require('body-parser'); 
 
 /**
  * App Variables
@@ -33,6 +34,9 @@ conn.connect((err) =>{
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 app.use(express.static(path.join(__dirname, "public")));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
 
 /**
  * Routes Definitions
@@ -60,7 +64,8 @@ app.get("/apply_e_pass", (req, res) => {
 });
 
 app.post("/epass", (req, res) => {
-  let data = {officer_id: 1,name:'Amit Tiwari',purpose: 'official'};
+  
+  let data = {officer_id: req.body.officer_id,name:req.body.name,purpose: 'official'};
   let sql = "INSERT INTO visitors SET ?";
   let query = conn.query(sql, data,(err, results) => {
     if(err) throw err;
